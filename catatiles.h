@@ -104,7 +104,7 @@ public:
     std::vector<int> over_terrains;
 	// as above, but ingame names. used at catatiles initialization
     std::vector<std::string> over_terrain_names;
-	
+
     cata_tiles ();
     ~cata_tiles ();
     bool init (game *g);
@@ -154,7 +154,9 @@ public:
 enum special_cids
 {
     scid_you,
+    scid_you_female,
     scid_npc,
+    scid_npc_female,
     scid_select,
     scid_aim,
     scid_fog,

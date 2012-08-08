@@ -1943,7 +1943,10 @@ void map::draw_player (WINDOW* w, player &u, int sel)
     int tx = SEEX * tiles.width;
     int ty = SEEY * tiles.height;
     drawsq (w, u, u.posx, u.posy, false, true);
-    tiles.draw_cid (tx, ty, scid_you, tiles.special_cid);
+    int sprnum = u.male? scid_you : scid_you_female;
+    if (tiles.special_cid[scid_you_female].cid < 0 && tiles.special_cid[scid_you].cid >= 0)
+        sprnum = scid_you;
+    tiles.draw_cid (tx, ty, sprnum, tiles.special_cid);
 
     // draw clothes
     // first, get ids of anything worn by player

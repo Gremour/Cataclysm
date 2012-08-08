@@ -19,7 +19,9 @@ static const struct special_tile_info
 } special_info [scid_total] =
 {
     { '@', c_white,     "you", false },
+    { '@', c_white,     "you female", false },
     { '@', c_magenta,   "npc", false },
+    { '@', c_magenta,   "npc female", false },
     { '+', c_yellow,    "selection marker", false },
     { '*', c_red,       "aim marker", false },
     { '#', c_dkgray,    "fog of war", true },

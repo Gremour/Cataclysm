@@ -126,7 +126,7 @@ npc& npc::operator= (npc &rhs)
   styles.push_back(rhs.styles[i]);
 
  combat_rules = rhs.combat_rules;
- 
+
  marked_for_death = rhs.marked_for_death;
  dead = rhs.dead;
 
@@ -196,7 +196,7 @@ npc& npc::operator= (const npc &rhs)
   styles.push_back(rhs.styles[i]);
 
  combat_rules = rhs.combat_rules;
- 
+
  marked_for_death = rhs.marked_for_death;
  dead = rhs.dead;
 
@@ -214,7 +214,8 @@ std::string npc::save_info()
          pkill << " " <<  radiation << " " << cash << " " << recoil << " " <<
          scent << " " << moves << " " << underwater << " " << dodges_left <<
          " " << oxygen << " " << (marked_for_death ? "1" : "0") << " " <<
-         (dead ? "1" : "0") << " " << myclass << " " << feature << " " << patience << " ";
+         (dead ? "1" : "0") << " " << myclass << " " << feature << " " << patience << " "
+         << (male? "1" : "0") << " ";
 
 
  for (int i = 0; i < PF_MAX2; i++)
@@ -277,7 +278,7 @@ void npc::load_info(game *g, std::string data)
 {
  std::stringstream dump;
  std::string tmpname;
- int deathtmp, deadtmp, classtmp;
+ int deathtmp, deadtmp, classtmp, maletmp;
  dump << data;
  dump >> id;
 // Standard player stuff
@@ -291,7 +292,7 @@ void npc::load_info(game *g, std::string data)
          int_cur >> int_max >> per_cur >> per_max >> hunger >> thirst >>
          fatigue >> stim >> pain >> pkill >> radiation >> cash >> recoil >>
          scent >> moves >> underwater >> dodges_left >> oxygen >> deathtmp >>
-         deadtmp >> classtmp >> feature >> patience;
+         deadtmp >> classtmp >> feature >> patience >> maletmp;
 
  if (deathtmp == 1)
   marked_for_death = true;
@@ -303,6 +304,10 @@ void npc::load_info(game *g, std::string data)
  else
   dead = false;
 
+ if (maletmp)
+    male = true;
+ else
+    male = false;
  myclass = npc_class(classtmp);
 
  for (int i = 0; i < PF_MAX2; i++)
@@ -1947,7 +1952,21 @@ void npc::draw(WINDOW* w, int ux, int uy, bool inv)
  if (x < 0 || x > SEEX * 2 ||
      y < 0 || y > SEEY * 2)
      return;
- tiles.draw_cid (x * tiles.width, y * tiles.height, scid_npc, tiles.special_cid, feature);
+
+ unsigned long att = 0;
+ if (attitude == NPCATT_KILL)
+  att = 0xff0000;
+ if (is_friend())
+  att = 0x00ff00;
+ else if (is_following())
+  att = 0x77ff77;
+ if (att && tiles.special_cid[scid_bulb].cid >= 0)
+  tiles.draw_cid (x * tiles.width, y * tiles.height, scid_bulb, tiles.special_cid, 0, att, false);
+
+ int sprnum = male? scid_npc : scid_npc_female;
+ if (tiles.special_cid[scid_npc_female].cid < 0 && tiles.special_cid[scid_npc].cid >= 0)
+    sprnum = scid_npc;
+ tiles.draw_cid (x * tiles.width, y * tiles.height, sprnum, tiles.special_cid, feature);
  if (inv)
     tiles.draw_cid (x * tiles.width, y * tiles.height, scid_select, tiles.special_cid);
 }
